@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import stripe
 from scripts import tabledef
 from scripts import forms
 from scripts import helpers
@@ -61,6 +61,28 @@ def signup():
             return json.dumps({'status': 'User/Pass required'})
         return render_template('login.html', form=form)
     return redirect(url_for('login'))
+
+
+
+##### PAYMENT
+# Set your secret key: remember to change this to your live secret key in production
+# See your keys here: https://dashboard.stripe.com/account/apikeys
+stripe.api_key = 'sk_test_6bJmOziDLN2DzsZkJLEAtrKs00hhaStrDe'
+
+session = stripe.checkout.Session.create(
+  payment_method_types=['card'],
+  line_items=[{
+    'name': 'T-shirt',
+    'description': 'Comfortable cotton t-shirt',
+    'images': ['https://example.com/t-shirt.png'],
+    'amount': 500,
+    'currency': 'usd',
+    'quantity': 1,
+  }],
+  success_url='https://example.com/success?session_id={CHECKOUT_SESSION_ID}',
+  cancel_url='https://example.com/cancel',
+)
+
 
 
 # -------- Settings ---------------------------------------------------------- #
